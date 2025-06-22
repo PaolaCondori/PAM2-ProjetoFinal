@@ -6,11 +6,12 @@ namespace UsuarioAPI.Models
         public string Nome { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
-        public int  IdTipoPerfil { get; set; }
-        public int Senha { get; set; }
+        public int IdTipoPerfil { get; set; }
+        public string Senha { get; set; } = string.Empty;
         public string ChamadosAbertos { get; set; } = string.Empty;
         public string ChamadosConcluidos { get; set; } = string.Empty;
-
+        public byte[]? SenhaHash { get; set; }
+        public byte[]? SenhaSalt { get; set; }
     }
 
 }

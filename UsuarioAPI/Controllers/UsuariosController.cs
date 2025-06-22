@@ -1,7 +1,9 @@
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UsuarioAPI.Data;
 using UsuarioAPI.Models;
+using UsuarioAPI.Utils;
 
 namespace UsuarioAPI.Controllers
 {
@@ -15,7 +17,6 @@ namespace UsuarioAPI.Controllers
         {
             _context = context;
         }
-
         private async Task<bool> UsuarioExistente(string nome)
         {
             if (await _context.TB_USUARIOS.AnyAsync(x => x.Nome.ToLower() == nome.ToLower()))
@@ -23,21 +24,6 @@ namespace UsuarioAPI.Controllers
                 return true;
             }
             return false;
-        }
-
-        [HttpGet("{rm}")]
-        public async Task<IActionResult> GetSingle(int rm)
-        {
-            try
-            {
-                Usuario u = await _context.TB_USUARIOS
-                    .FirstOrDefaultAsync(uBusca => uBusca.Rm == rm);
-                return Ok(u);
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
 
         [HttpGet("GetAll")]
@@ -63,8 +49,13 @@ namespace UsuarioAPI.Controllers
             {
                 if (await UsuarioExistente(usuario.Nome))
                 {
-                    throw new System.Exception("Nome de ususário já existe");
+                    throw new System.Exception("Nome de usuário já existe!");
                 }
+
+                Criptografia.CriarPasswordHash(usuario.Senha, out byte[] hash, out byte[] salt);
+                usuario.Senha = string.Empty;
+                usuario.SenhaHash = hash;
+                usuario.SenhaSalt = salt;
 
                 await _context.TB_USUARIOS.AddAsync(usuario);
                 await _context.SaveChangesAsync();
@@ -76,26 +67,48 @@ namespace UsuarioAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpPut("AlterarSenha")]
         public async Task<IActionResult> AlterarSenha(Usuario user)
         {
-            try{
+            try
+            {
                 Usuario? usuario = await _context.TB_USUARIOS
                     .FirstOrDefaultAsync(x => x.Nome.ToLower().Equals(user.Nome.ToLower()));
 
-                if(usuario == null){
-                    throw new System.Exception("Usuário não encontrado.");
-                }else{
-                    usuario.Senha = usuario.Senha;//errado
+                if (usuario == null)
+                {
+                    throw new System.Exception("Usuário não encontrado!");
+                }
+                else
+                {
+                    Criptografia.CriarPasswordHash(user.Senha, out byte[] hash, out byte[] salt);
+                    usuario.SenhaHash = hash;
+                    usuario.SenhaSalt = salt;
 
                     _context.TB_USUARIOS.Update(usuario);
                     await _context.SaveChangesAsync();
                     return Ok("Senha alterada!");
                 }
-                
+
             }
-            catch(System.Exception ex){
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpGet("{rm}")]
+        public async Task<IActionResult> GetSingle(int rm)
+        {
+            try
+            {
+                Usuario u = await _context.TB_USUARIOS
+                    .FirstOrDefaultAsync(uBusca => uBusca.Rm == rm);
+                return Ok(u);
+            }
+            catch (System.Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }

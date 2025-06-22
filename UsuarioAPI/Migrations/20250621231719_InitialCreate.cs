@@ -22,9 +22,11 @@ namespace UsuarioAPI.Migrations
                     Email = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
                     Telefone = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
                     IdTipoPerfil = table.Column<int>(type: "int", nullable: false),
-                    Senha = table.Column<int>(type: "int", nullable: false),
+                    Senha = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
                     ChamadosAbertos = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
-                    ChamadosConcluidos = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false)
+                    ChamadosConcluidos = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    SenhaHash = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    SenhaSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -33,14 +35,14 @@ namespace UsuarioAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "TB_USUARIOS",
-                columns: new[] { "Rm", "ChamadosAbertos", "ChamadosConcluidos", "Email", "IdTipoPerfil", "Nome", "Senha", "Telefone" },
+                columns: new[] { "Rm", "ChamadosAbertos", "ChamadosConcluidos", "Email", "IdTipoPerfil", "Nome", "Senha", "SenhaHash", "SenhaSalt", "Telefone" },
                 values: new object[,]
                 {
-                    { 123090, "1", "2", "Maria@gmail.com", 3, "Maria", 123456, "11 988871234" },
-                    { 123980, "5", "1", "João@gmail.com", 2, "João", 180805, "11 911876543" },
-                    { 150570, "0", "3", "Marcela@gmail.com", 3, "Marcela", 30505, "11 955478756" },
-                    { 201190, "2", "5", "Eduardo@gmail.com", 1, "Eduardo", 567890, "11 908879876" },
-                    { 339090, "3", "2", "Claudia@gmail.com", 3, "Claudia", 456321, "11 989971774" }
+                    { 123090, "1", "2", "Maria@gmail.com", 3, "Maria", "123456", null, null, "11 988871234" },
+                    { 123980, "5", "1", "João@gmail.com", 2, "João", "180805", null, null, "11 911876543" },
+                    { 150570, "0", "3", "Marcela@gmail.com", 3, "Marcela", "030505", null, null, "11 955478756" },
+                    { 201190, "2", "5", "Eduardo@gmail.com", 1, "Eduardo", "567890", null, null, "11 908879876" },
+                    { 339090, "3", "2", "Claudia@gmail.com", 3, "Claudia", "456321", null, null, "11 989971774" }
                 });
         }
 

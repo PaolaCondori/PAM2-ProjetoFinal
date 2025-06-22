@@ -52,8 +52,16 @@ namespace UsuarioAPI.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("Varchar");
 
-                    b.Property<int>("Senha")
-                        .HasColumnType("int");
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
+
+                    b.Property<byte[]>("SenhaHash")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("SenhaSalt")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
@@ -73,7 +81,7 @@ namespace UsuarioAPI.Migrations
                             Email = "Maria@gmail.com",
                             IdTipoPerfil = 3,
                             Nome = "Maria",
-                            Senha = 123456,
+                            Senha = "123456",
                             Telefone = "11 988871234"
                         },
                         new
@@ -84,7 +92,7 @@ namespace UsuarioAPI.Migrations
                             Email = "Eduardo@gmail.com",
                             IdTipoPerfil = 1,
                             Nome = "Eduardo",
-                            Senha = 567890,
+                            Senha = "567890",
                             Telefone = "11 908879876"
                         },
                         new
@@ -95,7 +103,7 @@ namespace UsuarioAPI.Migrations
                             Email = "Claudia@gmail.com",
                             IdTipoPerfil = 3,
                             Nome = "Claudia",
-                            Senha = 456321,
+                            Senha = "456321",
                             Telefone = "11 989971774"
                         },
                         new
@@ -106,7 +114,7 @@ namespace UsuarioAPI.Migrations
                             Email = "João@gmail.com",
                             IdTipoPerfil = 2,
                             Nome = "João",
-                            Senha = 180805,
+                            Senha = "180805",
                             Telefone = "11 911876543"
                         },
                         new
@@ -117,7 +125,7 @@ namespace UsuarioAPI.Migrations
                             Email = "Marcela@gmail.com",
                             IdTipoPerfil = 3,
                             Nome = "Marcela",
-                            Senha = 30505,
+                            Senha = "030505",
                             Telefone = "11 955478756"
                         });
                 });
