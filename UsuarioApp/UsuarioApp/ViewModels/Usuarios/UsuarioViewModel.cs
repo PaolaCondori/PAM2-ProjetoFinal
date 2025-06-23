@@ -16,10 +16,10 @@ namespace UsuarioApp.ViewModels.Usuarios
         public ICommand AutenticarCommand { get; set; }
         public ICommand RegistrarCommand { get; set; }
         public ICommand DirecionarCadastroCommand { get; set; }
-
         public UsuarioViewModel() 
         {
-            uService = new UsuarioService();
+            string token = Preferences.Get("UsuarioToken", string.Empty);
+            uService = new UsuarioService(token);
             InicializarCommands(); 
         }
 
@@ -31,26 +31,86 @@ namespace UsuarioApp.ViewModels.Usuarios
         }
 
         #region AtributosPropriedades
-        private string login = string.Empty;
-        public string Login
+
+        private int rm;
+        private string nome = string.Empty;
+        private string email = string.Empty;
+        private string telefone = string.Empty;
+        private string tipoPerfil = string.Empty;
+        private string senha = string.Empty;
+        private string chamadosAbertos = string.Empty;
+        private string chamadosConcluidos = string.Empty;
+
+        public int Rm
         {
-            get { return login; }
+            get => rm;
             set
             {
-                login = value;
-                OnPropertyChamged();
+                rm = value;
+                OnPropertyChanged();
             }
         }
-
-        private string senha = string.Empty;
-
+        public string Nome
+        {
+            get => nome;
+            set
+            {
+                nome = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Email
+        {
+            get => email;
+            set
+            {
+                email = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Telefone
+        {
+            get => telefone;
+            set
+            {
+                telefone = value;
+                OnPropertyChanged();
+            }
+        }
+        public string TipoPerfil
+        {
+            get => tipoPerfil;
+            set
+            {
+                tipoPerfil = value;
+                OnPropertyChanged();
+            }
+        }
         public string Senha
         {
-            get { return senha; }
+            get => senha;
             set
             {
                 senha = value;
-                OnPropertyChamged();
+                OnPropertyChanged();
+            }
+        }
+        public string ChamadosAbertos
+        {
+            get => chamadosAbertos;
+            set
+            {
+                chamadosAbertos = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ChamadosConcluidos
+        {
+            get => chamadosConcluidos;
+            set
+            {
+                chamadosConcluidos = value;
+                OnPropertyChanged();
             }
         }
         #endregion
@@ -60,7 +120,7 @@ namespace UsuarioApp.ViewModels.Usuarios
             try
             {
                 Usuario u = new Usuario();
-                u.Nome = login;
+                u.Nome = nome;
                 u.Senha = senha;
 
                 Usuario uAutenticado = await uService.PostAutenticarUsuarioAsync(u);
@@ -76,7 +136,7 @@ namespace UsuarioApp.ViewModels.Usuarios
                     await Application.Current.MainPage
                         .DisplayAlert("Informação", mensagem, "Ok");
 
-                    Application.Current.MainPage = new MainPage();
+                    Application.Current.MainPage = new AppShell();
                 }
                 else 
                 {
@@ -96,24 +156,29 @@ namespace UsuarioApp.ViewModels.Usuarios
         {
             try
             {
-                Usuario u = new Usuario();
-                u.Nome = login;
-                u.Senha = senha;
-
-                Usuario uRegistrado = await uService.PostRegistrarUsuarioAsync(u);
-
-                if (uRegistrado.Rm != null)
+                Usuario model = new Usuario()
                 {
-                    string mensagens = $"Usuário Rm {uRegistrado.Rm} registrado com sucesso!!";
-                    await Application.Current.MainPage.DisplayAlert("Informação", mensagens, "Ok");
+                    Rm = this.rm,
+                    Nome = this.nome,
+                    Email = this.email,
+                    Telefone = this.telefone,
+                    TipoPerfil = this.TipoPerfil,
+                    Senha = this.senha,
+                    ChamadosAbertos = this.chamadosAbertos,
+                    ChamadosConcluidos = this.chamadosConcluidos
+                };
+                if (model.Rm != 0)
+                   await uService.PostRegistrarUsuarioAsync(model);
 
-                    await Application.Current.MainPage
-                        .Navigation.PopAsync();
-                }
+                await Application.Current.MainPage
+                    .DisplayAlert("Mensagem", "Dados salvos com sucesso!", "Ok");
+
+                await Shell.Current.GoToAsync("..");
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Informação", ex.Message + "Detalhes: " + ex.InnerException, "Ok");
+                await Application.Current.MainPage
+                    .DisplayAlert("Ops", ex.Message + "Detalhes: " + ex.InnerException, "Ok");
             }
         }
 
@@ -129,6 +194,8 @@ namespace UsuarioApp.ViewModels.Usuarios
                 await Application.Current.MainPage
                     .DisplayAlert("Informação", ex.Message + " Detalhes: " + ex.Message, "Ok");
             }
+        }
+
         #endregion
     }
 }

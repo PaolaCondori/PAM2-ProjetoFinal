@@ -6,11 +6,11 @@ public partial class LoginView : ContentPage
 {
     UsuarioViewModel usuarioViewModel;
 
-        public LoginView()
-        {
-            InitializeComponent();
+    public LoginView()
+    {
+       InitializeComponent();
 
-            usuarioViewModel = new UsuarioViewModel();
-            BindingContext = usuarioViewModel;
-        }
+       usuarioViewModel = new UsuarioViewModel();
+       BindingContext = usuarioViewModel;
+    }
 }
