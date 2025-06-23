@@ -26,6 +26,22 @@ namespace UsuarioApp.ViewModels.Usuarios
 
         public ICommand NovoUsuarioCommand { get; }
 
+        private Usuario usuarioSelecionado;
+
+        public Usuario UsuarioSelecionado
+        {
+            get { return usuarioSelecionado; }
+            set 
+            { 
+                if(value != null)
+                {
+                    usuarioSelecionado = value;
+                    Shell.Current
+                        .GoToAsync($"edUsuarioView?uRm={usuarioSelecionado.Rm}");
+                }
+            }
+        }
+
         public async Task ObterUsuarios()
         {
             try
@@ -44,7 +60,7 @@ namespace UsuarioApp.ViewModels.Usuarios
         {
             try
             {
-                await Shell.Current.GoToAsync("cadUsuarioView");
+                await Shell.Current.GoToAsync("edUsuarioView");
             }
             catch (Exception ex)
             {

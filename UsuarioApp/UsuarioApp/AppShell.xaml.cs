@@ -8,7 +8,7 @@ namespace UsuarioApp
         {
             InitializeComponent();
 
-            Routing.RegisterRoute("cadUsuarioView", typeof(CadastroView));
+            Routing.RegisterRoute("edUsuarioView", typeof(EdicaoUsuarioView));
         }
     }
 }

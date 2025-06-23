@@ -10,12 +10,17 @@ using UsuarioApp.Views.Usuarios;
 
 namespace UsuarioApp.ViewModels.Usuarios
 {
+
+    [QueryProperty("UsuarioSelecionadoRm", "uRm")]
     public class UsuarioViewModel : BaseViewModel
     {
         private UsuarioService uService;
         public ICommand AutenticarCommand { get; set; }
         public ICommand RegistrarCommand { get; set; }
         public ICommand DirecionarCadastroCommand { get; set; }
+
+        public ICommand SalvarCommand { get; set; }
+
         public UsuarioViewModel() 
         {
             string token = Preferences.Get("UsuarioToken", string.Empty);
@@ -28,6 +33,7 @@ namespace UsuarioApp.ViewModels.Usuarios
             AutenticarCommand = new Command(async () => await AutenticarUsuario());
             RegistrarCommand = new Command(async () => await RegistrarUsuario());
             DirecionarCadastroCommand = new Command(async () => await DirecionarParaCadastro());
+            SalvarCommand = new Command(async () => { await SalvarUsuario(); });
         }
 
         #region AtributosPropriedades
@@ -113,8 +119,23 @@ namespace UsuarioApp.ViewModels.Usuarios
                 OnPropertyChanged();
             }
         }
+
+        private string usuarioSelecionadoRm;
+
+        public string UsuarioSelecionadoRm
+        {
+            set
+            {
+                if (value != null)
+                {
+                    usuarioSelecionadoRm = Uri.UnescapeDataString(value);
+                    CarregarUsuario();
+                }
+            }
+        }
         #endregion
 
+        #region Métodos
         public async Task AutenticarUsuario()
         {
             try
@@ -138,7 +159,7 @@ namespace UsuarioApp.ViewModels.Usuarios
 
                     Application.Current.MainPage = new AppShell();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -146,8 +167,6 @@ namespace UsuarioApp.ViewModels.Usuarios
                     .DisplayAlert("Informação", ex.Message + " Detalhes: " + ex.InnerException, "Ok");
             }
         }
-
-        #region Métodos
         public async Task RegistrarUsuario()
         {
             try
@@ -176,6 +195,41 @@ namespace UsuarioApp.ViewModels.Usuarios
             }
         }
 
+        public async Task SalvarUsuario()
+        {
+            try
+            {
+                Usuario model = new Usuario()
+                {
+                    Rm = this.rm,
+                    Nome = this.nome,
+                    Email = this.email,
+                    Telefone = this.telefone,
+                    TipoPerfil = this.TipoPerfil,
+                    Senha = this.senha,
+                    ChamadosAbertos = this.chamadosAbertos,
+                    ChamadosConcluidos = this.chamadosConcluidos
+                };
+
+                if(model.Rm == 0)
+                    await uService.PostRegistrarUsuarioAsync(model);
+                else
+                    await uService.PutUsuarioAsync(model);
+
+
+                await Application.Current.MainPage
+                        .DisplayAlert("Mensagem", "Dados salvos com sucesso!", "Ok");
+
+                await Shell.Current.GoToAsync("..");
+
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage
+                    .DisplayAlert("Ops", ex.Message + "Detalhes: " + ex.InnerException, "Ok");
+            }
+        }
+
         public async Task DirecionarParaCadastro()
         {
             try
@@ -187,6 +241,29 @@ namespace UsuarioApp.ViewModels.Usuarios
             {
                 await Application.Current.MainPage
                     .DisplayAlert("Informação", ex.Message + " Detalhes: " + ex.Message, "Ok");
+            }
+        }
+
+        public async void CarregarUsuario()
+        {
+            try
+            {
+                Usuario u = await
+                uService.GetUsuarioAsync(int.Parse(usuarioSelecionadoRm));
+
+                this.Nome = u.Nome;
+                this.Rm = u.Rm;
+                this.Telefone = u.Telefone;
+                this.Email = u.Email;
+                this.TipoPerfil = u.TipoPerfil;
+                this.Senha = u.Senha;
+                this.ChamadosAbertos = u.ChamadosAbertos;
+                this.ChamadosConcluidos = u.ChamadosConcluidos;
+            }
+            catch (Exception ex) 
+            {
+                await Application.Current.MainPage
+                    .DisplayAlert("Ops", ex.Message + " Detalhes: " + ex.InnerException, "Ok");
             }
         }
 

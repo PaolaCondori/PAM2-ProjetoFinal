@@ -46,7 +46,7 @@ namespace UsuarioApp.Services.Usuarios
             return u;
         }
 
-        public async Task<int> PutAlterarSenhaUsuarioAsync(Usuario u)
+        public async Task<int> PutUsuarioAsync(Usuario u)
         {
             var result = await _request.PutAsync(apiUrlBase, u, _token);
             return result;

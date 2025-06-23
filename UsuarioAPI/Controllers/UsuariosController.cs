@@ -68,13 +68,13 @@ namespace UsuarioAPI.Controllers
             }
         }
 
-        [HttpPut("AlterarSenha")]
-        public async Task<IActionResult> AlterarSenha(Usuario user)
+        [HttpPut]
+        public async Task<IActionResult> Update(Usuario user)
         {
             try
             {
                 Usuario? usuario = await _context.TB_USUARIOS
-                    .FirstOrDefaultAsync(x => x.Nome.ToLower().Equals(user.Nome.ToLower()));
+                    .FirstOrDefaultAsync(x => x.Rm.Equals(user.Rm));
 
                 if (usuario == null)
                 {
@@ -82,13 +82,45 @@ namespace UsuarioAPI.Controllers
                 }
                 else
                 {
-                    Criptografia.CriarPasswordHash(user.Senha, out byte[] hash, out byte[] salt);
-                    usuario.SenhaHash = hash;
-                    usuario.SenhaSalt = salt;
+                    if (user.Nome == "")
+                    {
+                        user.Nome = usuario.Nome;
+                    }
+                    if (user.Email == "")
+                    {
+                        user.Email = usuario.Email;
+                    }
+                    if (user.Telefone == "")
+                    {
+                        user.Telefone = usuario.Telefone;
+                    }
+                    if (user.TipoPerfil == "")
+                    {
+                        user.Senha = usuario.TipoPerfil;
+                    }
+                    if (user.Senha == "")
+                    {
+                        user.Senha = usuario.Senha;
+                    }
+                    if (user.ChamadosAbertos == "")
+                    {
+                        user.ChamadosAbertos = usuario.ChamadosAbertos;
+                    }
+                    if (user.ChamadosConcluidos == "")
+                    {
+                        user.ChamadosConcluidos = usuario.ChamadosConcluidos;
+                    }
+                    usuario.Nome = user.Nome;
+                    usuario.Email = user.Email;
+                    usuario.Telefone = user.Telefone;
+                    usuario.TipoPerfil = user.TipoPerfil;
+                    usuario.Senha = user.Senha;
+                    usuario.ChamadosAbertos = user.ChamadosAbertos;
+                    usuario.ChamadosConcluidos = user.ChamadosConcluidos;
 
                     _context.TB_USUARIOS.Update(usuario);
-                    await _context.SaveChangesAsync();
-                    return Ok("Senha alterada!");
+                    int linhasAfetadas = await _context.SaveChangesAsync();
+                    return Ok(linhasAfetadas);
                 }
 
             }
