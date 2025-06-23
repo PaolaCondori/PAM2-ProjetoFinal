@@ -97,7 +97,7 @@ namespace UsuarioAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpGet("{rm}")]
         public async Task<IActionResult> GetSingle(int rm)
         {
@@ -109,6 +109,31 @@ namespace UsuarioAPI.Controllers
             }
             catch (System.Exception ex)
             {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("Autenticar")]
+        public async Task<IActionResult> AutenticarUsuario(Usuario credenciais)
+        {
+            try
+            {
+                Usuario? usuario = await _context.TB_USUARIOS
+                    .FirstOrDefaultAsync(x => x.Nome.ToLower().Equals(credenciais.Nome.ToLower()));
+
+                if (usuario == null)
+                {
+                    throw new System.Exception("Usuário não econtrado.");
+                }
+                else if (!Criptografia.VerificarPasswordHash(credenciais.Senha, usuario.SenhaHash, usuario.SenhaSalt))
+                {
+                    throw new System.Exception("Senha incorreta.");
+                }
+                else
+                {
+                    return Ok(usuario);
+                }
+            } catch (System.Exception ex) {
                 return BadRequest(ex.Message);
             }
         }
