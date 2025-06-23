@@ -131,6 +131,8 @@ namespace UsuarioAPI.Controllers
                 }
                 else
                 {
+                    _context.TB_USUARIOS.Update(usuario);
+                    await _context.SaveChangesAsync();
                     return Ok(usuario);
                 }
             } catch (System.Exception ex) {

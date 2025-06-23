@@ -12,7 +12,7 @@ namespace UsuarioApp.Models
         public string Nome { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
-        public string TipoPerfil { get; set; }
+        public string TipoPerfil { get; set; } = string.Empty;
         public string Senha { get; set; } = string.Empty;
         public string Token { get; set; }
         public string ChamadosAbertos { get; set; } = string.Empty;

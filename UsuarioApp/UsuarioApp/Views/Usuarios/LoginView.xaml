@@ -4,7 +4,7 @@
              x:Class="UsuarioApp.Views.Usuarios.LoginView"
              Title="LoginView">
     <VerticalStackLayout>
-        <Entry Placeholder="Digite seu nome de usuário" Text="{Binding Login}"
+        <Entry Placeholder="Digite seu nome de usuário" Text="{Binding Nome}"
                Margin="0,10,0,0" VerticalOptions="FillAndExpand"
                HorizontalOptions="FillAndExpand">
         </Entry>

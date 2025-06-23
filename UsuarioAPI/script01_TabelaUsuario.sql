@@ -10,7 +10,7 @@ GO
 
 BEGIN TRANSACTION;
 CREATE TABLE [TB_USUARIOS] (
-    [Rm] int NOT NULL IDENTITY,
+    [Rm] int NOT NULL,
     [Nome] Varchar(200) NOT NULL,
     [Email] Varchar(200) NOT NULL,
     [Telefone] Varchar(200) NOT NULL,

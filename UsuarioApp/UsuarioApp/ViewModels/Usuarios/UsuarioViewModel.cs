@@ -120,12 +120,12 @@ namespace UsuarioApp.ViewModels.Usuarios
             try
             {
                 Usuario u = new Usuario();
-                u.Nome = nome;
-                u.Senha = senha;
+                u.Nome = Nome;
+                u.Senha = Senha;
 
                 Usuario uAutenticado = await uService.PostAutenticarUsuarioAsync(u);
 
-                if (!string.IsNullOrEmpty(uAutenticado.Token))
+                if (string.IsNullOrEmpty(uAutenticado.Token))
                 {
                     string mensagem = $"Bem-vindo(a) {uAutenticado.Nome}.";
 
@@ -138,11 +138,7 @@ namespace UsuarioApp.ViewModels.Usuarios
 
                     Application.Current.MainPage = new AppShell();
                 }
-                else 
-                {
-                    await Application.Current.MainPage
-                        .DisplayAlert("Informação", "Dados Incorretos ;[", "Ok");
-                }
+                
             }
             catch (Exception ex)
             {
@@ -172,8 +168,6 @@ namespace UsuarioApp.ViewModels.Usuarios
 
                 await Application.Current.MainPage
                     .DisplayAlert("Mensagem", "Dados salvos com sucesso!", "Ok");
-
-                await Shell.Current.GoToAsync("..");
             }
             catch (Exception ex)
             {
