@@ -11,7 +11,7 @@ namespace UsuarioApp.Services.Usuarios
     public class UsuarioService : Request
     {
         private readonly Request _request;
-        private readonly string apiUrlBase = "api";
+        private const string apiUrlBase = "";
 
         private string _token;
         public UsuarioService(string token)
@@ -22,7 +22,7 @@ namespace UsuarioApp.Services.Usuarios
 
         public async Task<ObservableCollection<Usuario>> GetUsuariosAsync()
         {
-            string urlComplementar = string.Format("{0}", "/GetAll");
+            string urlComplementar = "/GetAll";
             ObservableCollection<Models.Usuario> listaUsuarios = await
             _request.GetAsync<ObservableCollection<Models.Usuario>>(apiUrlBase +
             urlComplementar, _token);
@@ -32,7 +32,7 @@ namespace UsuarioApp.Services.Usuarios
 
         public async Task<Usuario> PostRegistrarUsuarioAsync(Usuario u)
         {
-            string urlComplementar = string.Format("{0}", "/Registrar"); ;
+            string urlComplementar = "/Registrar";
             u.Rm = await _request.PostReturnIntAsync(apiUrlBase + urlComplementar, u, string.Empty);
             return u;
         }
@@ -54,7 +54,7 @@ namespace UsuarioApp.Services.Usuarios
 
         public async Task<Usuario> PostAutenticarUsuarioAsync(Usuario u)
         {
-            string urlComplementar = string.Format("{0}", "/Autenticar");
+            string urlComplementar = "/Autenticar";
             u = await _request.PostAsync(apiUrlBase + urlComplementar, u, string.Empty);
             
             return u;
