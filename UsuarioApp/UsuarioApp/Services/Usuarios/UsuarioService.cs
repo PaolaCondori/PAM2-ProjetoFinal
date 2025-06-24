@@ -11,7 +11,9 @@ namespace UsuarioApp.Services.Usuarios
     public class UsuarioService : Request
     {
         private readonly Request _request;
-        private const string apiUrlBase = "https://usuarioapi-cnckc7hcb4azb0fv.brazilsouth-01.azurewebsites.net/Usuarios";
+        private const string apiUrlBase = "http://localhost:5178/Usuarios";
+
+        /
 
         private string _token;
         public UsuarioService(string token)

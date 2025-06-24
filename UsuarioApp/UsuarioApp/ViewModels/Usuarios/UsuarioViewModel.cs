@@ -141,6 +141,7 @@ namespace UsuarioApp.ViewModels.Usuarios
             try
             {
                 Usuario u = new Usuario();
+               
                 u.Nome = Nome;
                 u.Senha = Senha;
 
